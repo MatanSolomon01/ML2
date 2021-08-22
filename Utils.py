@@ -1,4 +1,8 @@
+from sklearn.preprocessing import MinMaxScaler
+
+
 class Utils:
+
     @staticmethod
     def split(string, delimiters):
         """
@@ -20,10 +24,11 @@ class Utils:
         return stack
 
     @staticmethod
-    def basic_transform(df, **kwargs):
-        df = df.drop(df.columns[kwargs['columns_index_to_drop']], axis=1) if 'columns_index_to_drop' in kwargs else df
-        df = df.dropna().reset_index(drop=True) if ('remove_null_rows' in kwargs and kwargs['remove_null_rows']) else df
-
+    def basic_transform(df, basic_transform=None):
+        if basic_transform is None:
+            return df
+        for transformation, args in basic_transform.items():
+            df = transformation(df, *args)
         return df
 
     @staticmethod
@@ -33,3 +38,28 @@ class Utils:
             for line in constants:
                 print('\t', line, end='')
         print('\n')
+
+
+class DfOperations:
+    @staticmethod
+    def drop_columns(df, columns_index_to_drop):
+        return df.drop(df.columns[columns_index_to_drop], axis=1)
+
+    @staticmethod
+    def drop_null_rows(df):
+        return df.dropna().reset_index(drop=True)
+
+    @staticmethod
+    def normalize(df, method):
+        if method == 'MinMax':
+            scaler = MinMaxScaler()
+            df[:] = scaler.fit_transform(df)
+        return df
+
+    @staticmethod
+    def omit_last(df, last):
+        return df.iloc[:-last, :]
+
+    @staticmethod
+    def leave_last(df, last):
+        return df.iloc[-last:, :]
