@@ -80,6 +80,16 @@ class PredictorManager:
         print("Train is done.")
 
     def test(self, test_db=None, file_path="", label_name='Open', basic_transform=None):
-        test_db = VPDataset(file_path, label_name=label_name, basic_transform=basic_transform) if test_db is None else test_db
+        test_db = VPDataset(file_path, label_name=label_name, basic_transform=basic_transform) \
+            if test_db is None else test_db
         test_dataloader = DataLoader(test_db, len(test_db.labeled_data), True)
-        # next(test_dataloader)
+        for i, input_data in enumerate(test_dataloader):
+            histories, true_labels = input_data
+            true_labels /= 1.57861029e-05
+            predicted_labels = self.value_predictor(histories)
+            predicted_labels /= 1.57861029e-05
+            loss = sum([abs(predicted_labels[i] - true_labels[i]) for i in range(len(predicted_labels))]) / \
+                   len(predicted_labels)
+            print('true:', str(true_labels))
+            print('predicted:', str(predicted_labels))
+            print(loss)

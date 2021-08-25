@@ -27,9 +27,15 @@ class Utils:
     def basic_transform(df, basic_transform=None):
         if basic_transform is None:
             return df
+        auxiliary = {}
         for transformation, args in basic_transform.items():
-            df = transformation(df, *args)
-        return df
+            returned = transformation(df, *args)
+            if isinstance(returned, dict):
+                df = returned["df"]
+                auxiliary[transformation] = returned["auxiliary"]
+            else:
+                df = returned
+        return df, auxiliary
 
     @staticmethod
     def print_constants():
@@ -54,7 +60,9 @@ class DfOperations:
         if method == 'MinMax':
             scaler = MinMaxScaler()
             df[:] = scaler.fit_transform(df)
-        return df
+            scale = scaler.scale_
+            dict = {"df": df, "auxiliary": {"scale": scale}}
+        return dict
 
     @staticmethod
     def omit_last(df, last):

@@ -16,9 +16,11 @@ def main():
                                    (DfOp.normalize, ['MinMax']),
                                    (DfOp.omit_last, [60])])
 
-    main_db = VPDataset(file_path='Data/BTC-USD.csv', label_name='Open', basic_transform=basic_transform)
-    train_db, test_db = main_db.split_train_test(train_volume=0.7, method=C.split_methods.SPLIT_RANDOM)
-    manager.train(train_db)
+    for file_name in C.FILES_NAMES:
+        main_db = VPDataset(file_path=file_name, label_name='Open', basic_transform=basic_transform)
+        train_db, test_db = main_db.split_train_test(train_volume=0.7, method=C.split_methods.SPLIT_CHRONOLOGICAL)
+        manager.train(train_db)
+        manager.test(test_db=test_db)
 
 
 if __name__ == '__main__':

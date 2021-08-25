@@ -5,6 +5,7 @@ import torch
 from torch.utils.data.dataset import Dataset
 
 import Constants
+from Utils import DfOperations as DfOp
 from Utils import Utils as U
 
 
@@ -28,7 +29,9 @@ class VPDataset(Dataset):
         :return:
         """
         raw_data = pd.read_csv(file_path, header=0, date_parser=True)
-        raw_data = U.basic_transform(raw_data, basic_transform)
+        raw_data, returned = U.basic_transform(raw_data, basic_transform)
+        if DfOp.normalize in returned:
+            self.normalization_scaler = returned[DfOp.normalize]["scale"]
         self.attributes_len = raw_data.shape[1]
 
         items_len = raw_data.shape[0]
@@ -60,8 +63,8 @@ class VPDataset(Dataset):
 
         elif method == "RANDOM":
             shuffled = random.sample(self.labeled_data, total_len)
-            train = shuffled[:train_len]
-            test = shuffled[train_len:]
+            train = VPDataset(labeled_data=shuffled[:train_len], attributes_len=self.attributes_len)
+            test = VPDataset(labeled_data=shuffled[train_len:], attributes_len=self.attributes_len)
             return train, test
 
         else:
