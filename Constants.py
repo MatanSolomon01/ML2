@@ -9,3 +9,9 @@ WINDOWS_SIZE = 60
 LEARNING_RATE = 0.001
 BATCH_SIZE = 20
 EPOCHS = 100
+
+
+# split methods
+class split_methods:
+    SPLIT_CHRONOLOGICAL = "CHRONOLOGICAL"
+    SPLIT_RANDOM = "RANDOM"

@@ -61,5 +61,5 @@ class DfOperations:
         return df.iloc[:-last, :]
 
     @staticmethod
-    def leave_last(df, last):
+    def keep_last(df, last):
         return df.iloc[-last:, :]

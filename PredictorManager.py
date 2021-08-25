@@ -13,8 +13,8 @@ class PredictorManager:
         self.train_db = None
         self.value_predictor = None
 
-    def train(self, file_path, label_name='Open', basic_transform=None):
-        self.train_db = VPDataset(file_path, label_name=label_name, basic_transform=basic_transform)
+    def train(self, train_db=None, file_path="", label_name='Open', basic_transform=None):
+        self.train_db = VPDataset(file_path, label_name=label_name, basic_transform=basic_transform) if train_db is None else train_db
         self.value_predictor = ValuePredictor(self.train_db.attributes_len)
         print("Device set to:", self.value_predictor.device)
         self.value_predictor = self.value_predictor.to(self.value_predictor.device)
@@ -76,3 +76,10 @@ class PredictorManager:
         #     pickle.dump(self.db, f)
         # print("Saved!")
         #############################################
+
+        print("Train is done.")
+
+    def test(self, test_db=None, file_path="", label_name='Open', basic_transform=None):
+        test_db = VPDataset(file_path, label_name=label_name, basic_transform=basic_transform) if test_db is None else test_db
+        test_dataloader = DataLoader(test_db, len(test_db.labeled_data), True)
+        # next(test_dataloader)

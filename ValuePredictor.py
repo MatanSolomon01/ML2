@@ -11,9 +11,9 @@ class ValuePredictor(nn.Module):
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=Constants.LSTM_HIDDEN_SIZE, num_layers=Constants.LSTM_NUM_LAYERS, bidirectional=False, batch_first=True)
         self.linear = nn.Linear(in_features=Constants.LSTM_HIDDEN_SIZE, out_features=Constants.LINEAR_LAYER)
 
-    def forward(self, other_things):
-        other_things = other_things.to(self.device)
-        other_things.requires_grad_(True)
-        other_things = self.lstm(other_things)[0][:, -1]
-        other_things = self.linear(other_things).squeeze(1)
-        return other_things
+    def forward(self, histories):
+        histories = histories.to(self.device)
+        histories.requires_grad_(True)
+        histories = self.lstm(histories)[0][:, -1]
+        histories = self.linear(histories).squeeze(1)
+        return histories
