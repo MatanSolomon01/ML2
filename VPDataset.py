@@ -39,19 +39,24 @@ class VPDataset(Dataset):
         raw_data, returned = U.basic_transform(raw_data, basic_transform)
         dates = raw_data['Date']
         raw_data = raw_data.drop('Date', axis=1)
-        self.attributes_len = raw_data.shape[1]
         self.predicted_len = len(label_name)
         self.label_index = [raw_data.columns.get_loc(label) for label in label_name]
         items_len = raw_data.shape[0]
+        new_df = ((raw_data[1:].reset_index(drop=True) - raw_data[:-1]) / raw_data[:-1]) \
+            .rename(columns={col: col + '_diff' for col in raw_data.columns})
+        raw_data = raw_data[1:].reset_index(drop=True)
+        raw_data = pd.concat([raw_data, new_df], axis=1)
+        self.attributes_len = raw_data.shape[1]
+
         for i in range(Constants.WINDOWS_SIZE + Constants.PREDICTION_SIZE, items_len):
             data = torch.tensor(
                 raw_data[i - Constants.WINDOWS_SIZE - Constants.PREDICTION_SIZE:i - Constants.PREDICTION_SIZE].values,
                 dtype=torch.float32)
             labels = torch.tensor(raw_data.loc[i - Constants.PREDICTION_SIZE:i - 1, label_name].values,
                                   dtype=torch.float32)
-            self.labeled_data.append(tuple([data, labels, list(dates[i - Constants.PREDICTION_SIZE:i].values),
-                                            list(dates[
-                                                 i - Constants.WINDOWS_SIZE - Constants.PREDICTION_SIZE:i - Constants.PREDICTION_SIZE].values)]))
+            self.labeled_data.append([data, labels, list(dates[i - Constants.PREDICTION_SIZE:i].values),
+                                      list(dates[
+                                           i - Constants.WINDOWS_SIZE - Constants.PREDICTION_SIZE:i - Constants.PREDICTION_SIZE].values)])
 
     def __len__(self):
         return len(self.labeled_data)
@@ -97,10 +102,10 @@ class VPDataset(Dataset):
         min_ele_temp = min_ele[self.label_index]
         scale_temp = scale[self.label_index]
         for i in range(0, len(self.labeled_data)):
-            self.labeled_data[i] = ((self.labeled_data[i][0] - min_ele) * scale,
-                                    (self.labeled_data[i][1] - min_ele_temp) * scale_temp,
-                                    self.labeled_data[i][2],
-                                    self.labeled_data[i][3])
+            self.labeled_data[i][0] = (self.labeled_data[i][0] - min_ele) * scale
+            self.labeled_data[i][1] = (self.labeled_data[i][1] - min_ele_temp) * scale_temp
+            # self.labeled_data[i][0] = (-1+2*(self.labeled_data[i][0]-min_ele)*scale)
+            # self.labeled_data[i][1] = -1+2*(self.labeled_data[i][1]-min_ele_temp)*scale_temp
         self.normalized = {"Shift": min_ele, "Scale": scale}
 
     def fit_norm(self, args_dict):

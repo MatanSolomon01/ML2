@@ -44,13 +44,16 @@ class PredictorManager:
                 for predicted_day_index in range(Constants.PREDICTION_SIZE):
                     predicted_labels = self.value_predictor(histories)
                     list_predicted.append(predicted_labels.unsqueeze(1))
+                    predicted_labels = torch.cat(
+                        [predicted_labels, (predicted_labels - histories[:, -1, :5]) / histories[:, -1, :5]], axis=1)
                     histories = torch.cat([histories[:, 1:, :], predicted_labels.unsqueeze(1)], dim=1)
                 tensor_predicted = torch.cat(list_predicted, dim=1)
                 loss = loss_function(tensor_predicted, true_labels)
                 full_loss_list.append(loss.item() * (scale[self.train_db.label_index]) ** 2)
                 batch_number += 1
                 loss.backward()
-
+                if epoch == Constants.EPOCHS - 1 and i == len(train_dataloader) - 1:
+                    print("fgf")
                 optimizer.step()
                 self.value_predictor.zero_grad()
 
@@ -105,6 +108,8 @@ class PredictorManager:
         for predicted_day_index in range(Constants.PREDICTION_SIZE):
             predicted_labels = self.value_predictor(histories_temp)
             list_predicted.append(predicted_labels.unsqueeze(1))
+            predicted_labels = torch.cat(
+                [predicted_labels, (predicted_labels - histories_temp[:, -1, :5]) / histories_temp[:, -1, :5]], axis=1)
             histories_temp = torch.cat([histories_temp[:, 1:, :], predicted_labels.unsqueeze(1)], dim=1)
         tensor_predicted = torch.cat(list_predicted, dim=1)
         histories, true_labels, predicted_labels, mse_loss, avg_loss = self.norm_loss(histories, true_labels,

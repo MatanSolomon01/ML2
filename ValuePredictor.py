@@ -5,7 +5,7 @@ import Constants
 
 
 class ValuePredictor(nn.Module):
-    def __init__(self, output_size=Constants.LINEAR_LAYER, input_size=Constants.LSTM_DEFAULT_INPUT_SIZE):
+    def __init__(self, input_size=Constants.LSTM_DEFAULT_INPUT_SIZE, output_size=Constants.LINEAR_LAYER):
         super(ValuePredictor, self).__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=Constants.LSTM_HIDDEN_SIZE,
