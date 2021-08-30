@@ -56,15 +56,6 @@ class DfOperations:
         return df.dropna().reset_index(drop=True)
 
     @staticmethod
-    def normalize(df, method):
-        if method == 'MinMax':
-            scaler = MinMaxScaler()
-            df[:] = scaler.fit_transform(df)
-            scale = scaler.scale_
-            dict = {"df": df, "auxiliary": {"scale": scale}}
-        return dict
-
-    @staticmethod
     def omit_last(df, last):
         return df.iloc[:-last, :]
 

@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="matan-so@iegpu06.iem.technion.ac.il:22" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="student@nlpgpu2020s-0007.eastus.cloudapp.azure.com:22">
+      <paths name="Machine Learning Adv 2020-0020">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/student/SimpleLSTM/Matan" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="matan-so@iegpu01.iem.technion.ac.il:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/lv_local/home/matan-so/Personal Things/DefaultInterperterPath" local="$PROJECT_DIR$" />
+            <mapping deploy="" local="" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="matan-so@iegpu02.iem.technion.ac.il:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/lv_local/home/matan-so/Personal Things/DefaultInterperterPath" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="matan-so@iegpu06.iem.technion.ac.il:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/lv_local/home/matan-so/Personal Things/DefaultInterperterPath" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
