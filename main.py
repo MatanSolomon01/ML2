@@ -10,7 +10,7 @@ from scipy.stats import spearmanr
 
 def main():
     U.print_constants()
-
+    print("hello sagi")
     manager = PredictorManager()
     basic_transform = OrderedDict([(DfOp.drop_columns, [[5]]),
                                    (DfOp.drop_null_rows, [])])
